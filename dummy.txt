@@ -1,46 +1,44 @@
-mysql> CREATE TABLE if not exists Team(TeamID INT, Team_name VARCHAR(20) NOT NULL, NoOfWin VARCHAR(20),
+CREATE TABLE if not exists Team(TeamID INT, Team_name VARCHAR(20) NOT NULL, NoOfWin VARCHAR(20),
                             NoOfLoss VARCHAR(30),                                 NoOfMatches VARCHAR(15),
                                ODI VARCHAR(10),                                 T20 VARCHAR(10),
                      Test VARCHAR(10),                                  PRIMARY KEY (TeamID)
                                                   );
-Query OK, 0 rows affected (0.39 sec)
 
 
-mysql> CREATE TABLE if not exists PLAYER                                 (                                 player_id INTEGER,                                 TeamID INTEGER ,                                 playername VARCHAR(10),                                 no_Of_runs INTEGER DEFAULT 0,
+
+CREATE TABLE if not exists PLAYER                                 (                                 player_id INTEGER,                                 TeamID INTEGER ,                                 playername VARCHAR(10),                                 no_Of_runs INTEGER DEFAULT 0,
  batting_avg INTEGER DEFAULT 0,                                 bowling_avg INTEGER DEFAULT 0,
                    wickets INTEGER DEFAULT 0,                                 PRIMARY KEY(player_id, TeamID),                                 FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade
                      );
 
 
-mysql> CREATE TABLE if not exists Coach                                 (                                 C_id INTEGER ,                                 C_name VARCHAR(20) NOT NULL,                       
+CREATE TABLE if not exists Coach                                 (                                 C_id INTEGER ,                                 C_name VARCHAR(20) NOT NULL,                       
     ->          TeamID INTEGER ,                                  PRIMARY KEY (C_id),
     ->                FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete set NULL
     ->        )
     -> ;
     
-mysql> alter table PLAYER add no_of_matches int;
-Query OK, 0 rows affected (0.31 sec)
-Records: 0  Duplicates: 0  Warnings: 0
+alter table PLAYER add no_of_matches int;
+
 
     
     
 
 
 
-mysql> CREATE TABLE if not exists Innings
-    ->                                 (
-    ->                                 InningsID INTEGER ,
-    ->                                 TeamID INTEGER NOT NULL,
-    ->                                 player_id INTEGER NOT NULL,
-    ->                                 PlayerScore INTEGER,
-    ->                                 PlayerWicket INTEGER,
-    ->                                 
-    ->                                 
-    ->                                 PRIMARY KEY(InningsID, TeamID, player_id),
-    ->                                 FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade,
-    ->                                     FOREIGN KEY (player_id) REFERENCES PLAYER(player_id) on delete cascade
-    ->                                 );
-Query OK, 0 rows affected (0.56 sec)
+CREATE TABLE if not exists Innings
+     (
+     InningsID INTEGER ,
+     TeamID INTEGER NOT NULL,
+     player_id INTEGER NOT NULL,
+     PlayerScore INTEGER,
+     PlayerWicket INTEGER,
+     
+     
+     PRIMARY KEY(InningsID, TeamID, player_id),
+     FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade,
+         FOREIGN KEY (player_id) REFERENCES PLAYER(player_id) on delete cascade
+     );
 
 
 
