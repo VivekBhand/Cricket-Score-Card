@@ -195,24 +195,25 @@ def show_coach():
 
     global Coachwindow
     Coachwindow = Tk()
+    # Coachwindow.state("zoomed")
     width = 25 * len(names)
     dimensions = "500x"+str(width)
     Coachwindow.geometry(dimensions) 
 
     
     for i,col_name in enumerate(names):
-        e=Label(Coachwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+        e=Label(Coachwindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
         e.grid(row=0,column=i)
     i=2
     for student in conn: 
         for j in range(len(student)):
-            e = Entry(Coachwindow, width=10, fg='blue',text = student[j]) 
+            e = Entry(Coachwindow, width=50, fg='blue',text = student[j]) 
             e.grid(row=i, column=j) 
             e.insert(END, student[j])
         i=i+1
-    Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,x=600, y=550)
-    Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,x=550, y=600)
-    Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,x=550, y=800)
+    Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.600, rely=0.550)
+    Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.550, rely=0.600)
+    Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.800)
     Coachwindow.mainloop()
 
 
@@ -263,6 +264,55 @@ def coach():
     #delete button
     Button(root2, text="DELETE", font=('Times New Roman', 15), command=deletecoa).place(x=350, y=550)
     root2.mainloop()
+
+def refreshumpire():
+    umpirewindow.destroy()
+    umpires()
+def umpires():
+
+    my_connect = sqlite3.connect("cricketdbc.db")
+    my_conn = my_connect.cursor()
+    my_conn.row_factory = sqlite3.Row
+
+    cursor = my_conn.execute("SELECT * FROM UMPIRE")
+
+    row = cursor.fetchone()
+    names = row.keys()
+    my_conn.execute("SELECT * FROM UMPIRE")
+
+    global umpirewindow
+    umpirewindow = Tk()
+    width = 25 * len(names)
+    dimensions = "500x"+str(width)
+    umpirewindow.geometry(dimensions) 
+
+    ####### end of connection ####
+
+    # r_set = my_conn.execute("SELECT * FROM Team")
+    # i = 0
+    # for student in r_set: 
+    #     for j in range(len(student)):
+    #         e = Label(Teamwindow,width=10, text=student[j]) 
+    #         e.grid(row=i, column=j) 
+    #     #e.insert(END, student[j])
+    #     i=i+1
+
+    #for i,row in enumerate(my)
+    for i,col_name in enumerate(names):
+        e=Label(umpirewindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+        e.grid(row=0,column=i)
+    i=2
+    for student in my_conn: 
+        for j in range(len(student)):
+            e = Entry(umpirewindow, width=50, fg='blue',text = student[j]) 
+            e.grid(row=i, column=j) 
+            e.insert(END, student[j])
+        i=i+1
+    Button(umpirewindow, text="Refresh", font=('Times New Roman', 15),command = refreshumpire).place(bordermode=OUTSIDE,relx=0.550, rely=0.500)
+    Button(umpirewindow, text="Add or Delete Umpire", font=('Times New Roman', 15),command = UMPIRES).place(bordermode=OUTSIDE,relx=0.550, rely=0.5600)
+    Button(umpirewindow, text="Exit", font=('Times New Roman', 15),command = umpirewindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.700)
+    umpirewindow.mainloop()
+
 
 #delete coach function
 def deletecoa():
@@ -591,7 +641,7 @@ Button(lbl, text="Team", font=('Times New Roman', 20),command=TEAM).place(relx=0
 Button(lbl, text="Coach", font=('Times New Roman', 20),command=show_coach).place(relx=0.7,
                                                                                                         rely=0.5)
 # , command=liveGui.live_match_screen
-Button(lbl, text="UMPIRE", font=('Times New Roman', 20),command=UMPIRES).place(relx=0.45,rely=0.5)
+Button(lbl, text="UMPIRE", font=('Times New Roman', 20),command=umpires).place(relx=0.45,rely=0.5)
 Button(lbl, text="Exit", font=('Times New Roman', 20), command=exitP).place(relx=0.45,rely=0.65)
 
 root.mainloop()
