@@ -178,6 +178,46 @@ def matches():
 
     root1.mainloop()
 
+def refreshCoach():
+    Coachwindow.destroy()
+    show_coach()
+
+def show_coach():
+    connect = sqlite3.connect("cricketdbc.db")
+    conn = connect.cursor()
+    conn.row_factory = sqlite3.Row
+
+    cursor = conn.execute("SELECT * FROM Coach")
+
+    row = cursor.fetchone()
+    names = row.keys()
+    conn.execute("SELECT * FROM Coach")
+
+    global Coachwindow
+    Coachwindow = Tk()
+    width = 25 * len(names)
+    dimensions = "500x"+str(width)
+    Coachwindow.geometry(dimensions) 
+
+    
+    for i,col_name in enumerate(names):
+        e=Label(Coachwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+        e.grid(row=0,column=i)
+    i=2
+    for student in conn: 
+        for j in range(len(student)):
+            e = Entry(Coachwindow, width=10, fg='blue',text = student[j]) 
+            e.grid(row=i, column=j) 
+            e.insert(END, student[j])
+        i=i+1
+    Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,x=600, y=550)
+    Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,x=550, y=600)
+    Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,x=550, y=800)
+    Coachwindow.mainloop()
+
+
+
+
 def coach():
     global root2
     global CoachIDEntry
@@ -548,7 +588,7 @@ Button(lbl, text="Match", font=('Times New Roman', 20),command=matches).place(re
 Button(lbl, text="Team", font=('Times New Roman', 20),command=TEAM).place(relx=0.55, rely=0.5)
 
 # , command=coach_screen
-Button(lbl, text="Coach", font=('Times New Roman', 20),command=coach).place(relx=0.7,
+Button(lbl, text="Coach", font=('Times New Roman', 20),command=show_coach).place(relx=0.7,
                                                                                                         rely=0.5)
 # , command=liveGui.live_match_screen
 Button(lbl, text="UMPIRE", font=('Times New Roman', 20),command=UMPIRES).place(relx=0.45,rely=0.5)
