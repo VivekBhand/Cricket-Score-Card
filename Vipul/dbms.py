@@ -183,6 +183,7 @@ def coach():
     global CoachIDEntry
     global teamIDEntry
     global CoachNameEntry
+    global deleteCoach
 
     root2 = Tk()
     root2.geometry('1450x800')
@@ -212,17 +213,49 @@ def coach():
     Button(root2, text="Submit", font=('Times New Roman', 15),command=coachentry).place(x=550, y=550)
     Button(root2, text="Cancel", font=('Times New Roman', 15), command=root2.destroy).place(x=700, y=550)
 
+
+    #delete the coach entry
+    delcoach = Label(root2, text="Enter ID: ", font=('Times New Roman', 15))
+    delcoach.place(relx=0.1, rely=0.7)
+
+    deleteCoach = Entry(root2, width=25, font=('Times New Roman', 15))
+    deleteCoach.place(relx=0.20, rely=0.7)
+    #delete button
+    Button(root2, text="DELETE", font=('Times New Roman', 15), command=deletecoa).place(x=350, y=550)
     root2.mainloop()
+
+#delete coach function
+def deletecoa():
+    delcoa = deleteCoach.get()
+    if delcoa != '':
+        dbc.deleteCoach((delcoa))
+        mb.showinfo('Done!', "Coach deleted", parent=root2)
+        root2.destroy()
+
+    else:
+        mb.showerror('Warning', "All Fields are necessary", parent=root2)
 
 def refreshTeam():
     Teamwindow.destroy()
     TEAM()
 def TEAM():
-    global Teamwindow
-    Teamwindow = Tk()
-    Teamwindow.geometry("500x500") 
+
     my_connect = sqlite3.connect("cricketdbc.db")
     my_conn = my_connect.cursor()
+    my_conn.row_factory = sqlite3.Row
+
+    cursor = my_conn.execute("SELECT * FROM Team")
+
+    row = cursor.fetchone()
+    names = row.keys()
+    my_conn.execute("SELECT * FROM Team")
+
+    global Teamwindow
+    Teamwindow = Tk()
+    width = 25 * len(names)
+    dimensions = "500x"+str(width)
+    Teamwindow.geometry(dimensions) 
+
     ####### end of connection ####
 
     # r_set = my_conn.execute("SELECT * FROM Team")
@@ -234,13 +267,6 @@ def TEAM():
     #     #e.insert(END, student[j])
     #     i=i+1
 
-    my_conn.row_factory = sqlite3.Row
-
-    cursor = my_conn.execute("SELECT * FROM Team")
-
-    row = cursor.fetchone()
-    names = row.keys()
-    my_conn.execute("SELECT * FROM Team")
     #for i,row in enumerate(my)
     for i,col_name in enumerate(names):
         e=Label(Teamwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
@@ -254,6 +280,7 @@ def TEAM():
         i=i+1
     Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,x=550, y=500)
     Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,x=550, y=600)
+    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,x=550, y=800)
     Teamwindow.mainloop()
     
 def teamADD():
@@ -381,6 +408,16 @@ def UMPIRES():
 
     u_matchesentry = Entry(show_res_window, font=('Times New Roman', 15),  width=25)
     u_matchesentry.place(x=600, y=250)
+
+    u_deletelbl = Label(show_res_window, text="UMPIRE ID: ", font=('Times New Roman', 15))
+    u_deletelbl.place(x=100, y=450)
+
+    u_deleteentry = Entry(show_res_window, font=('Times New Roman', 15),  width=15)
+    u_deleteentry.place(x=300, y=450)
+    
+    
+    
+    Button(show_res_window, text="DELETE", font=('Times New Roman', 15),command = umpiredelete).place(x=420, y=450)
     
     # , command=add_result
     Button(show_res_window, text="Submit", font=('Times New Roman', 15),command=umpireentry).place(x=550, y=550)
@@ -388,6 +425,16 @@ def UMPIRES():
 
 
     show_res_window.mainloop()
+
+def umpiredelete():
+    uID = u_deleteentry.get()
+    if uID != '':
+        dbc.deleteUMPIRE((uID))
+        mb.showinfo('Done!', "Umpire delted", parent=show_res_window)
+        show_res_window.destroy()
+
+    else:
+        mb.showerror('Warning', "All Fields are necessary", parent=show_res_window)
 
 def show_matches_screen():
     window = Tk()

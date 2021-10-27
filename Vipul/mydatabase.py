@@ -9,6 +9,8 @@ class Database:
         self.teamCursor = self.conn.cursor()
         self.umpireCursor = self.conn.cursor()
         self.coachCursor = self.conn.cursor()
+        self.deleteCoachCursor = self.conn.cursor()
+        self.deleteUMPIRECursor = self.conn.cursor()
 
     def createTable(self):
         # self.matchCursor.execute('''CREATE TABLE if not exists MATCH
@@ -58,6 +60,15 @@ class Database:
         #                         FOREIGN KEY(MATCH_NO) REFERENCES MATCH(MATCH_NO),
         #                         PRIMARY KEY(MATCH_NO)
         #                         );''')
+
+
+    def deleteCoach(self,values):
+        self.deleteCoachCursor.execute('''DELETE FROM Coach where C_id = ? ;''',[values])
+        self.deleteCoachCursor.execute('''commit;''')
+
+    def deleteUMPIRE(self,values):
+        self.deleteUMPIRECursor.execute('''DELETE FROM UMPIRE where u_id = ? ;''',[values])
+        self.deleteUMPIRECursor.execute('''commit;''')
 
     def insertTeam(self,values):
         self.teamCursor.execute('''INSERT INTO Team(TeamID, Team_name, NoOfWin, NoOfLoss,NoOfMatches,ODI,T20,Test) VALUES(?,?,?,?,?,?,?,?);''', values)
