@@ -368,9 +368,9 @@ def TEAM():
             e.grid(row=i, column=j) 
             e.insert(END, student[j])
         i=i+1
-    Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,x=550, y=500)
-    Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,x=550, y=600)
-    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,x=550, y=800)
+    Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,relx=0.550, rely=0.500)
+    Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.550, rely=0.600)
+    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.800)
     Teamwindow.mainloop()
     
 def teamADD():
