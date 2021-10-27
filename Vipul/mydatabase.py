@@ -29,7 +29,8 @@ class Database:
                                 NoOfMatches VARCHAR(15),
                                 ODI VARCHAR(10),
                                 T20 VARCHAR(10),
-                                Test VARCHAR(10),                                  PRIMARY KEY (TeamID)
+                                Test VARCHAR(10),
+                                PRIMARY KEY (TeamID)
                                                   );''')
 
         self.umpireCursor.execute('''CREATE TABLE if not exists UMPIRE

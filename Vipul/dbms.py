@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox as mb
 from mydatabase import Database
+import sqlite3
 
 def matches():
     global root1
@@ -213,7 +214,49 @@ def coach():
 
     root2.mainloop()
 
+def refreshTeam():
+    Teamwindow.destroy()
+    TEAM()
 def TEAM():
+    global Teamwindow
+    Teamwindow = Tk()
+    Teamwindow.geometry("500x500") 
+    my_connect = sqlite3.connect("cricketdbc.db")
+    my_conn = my_connect.cursor()
+    ####### end of connection ####
+
+    # r_set = my_conn.execute("SELECT * FROM Team")
+    # i = 0
+    # for student in r_set: 
+    #     for j in range(len(student)):
+    #         e = Label(Teamwindow,width=10, text=student[j]) 
+    #         e.grid(row=i, column=j) 
+    #     #e.insert(END, student[j])
+    #     i=i+1
+
+    my_conn.row_factory = sqlite3.Row
+
+    cursor = my_conn.execute("SELECT * FROM Team")
+
+    row = cursor.fetchone()
+    names = row.keys()
+    my_conn.execute("SELECT * FROM Team")
+    #for i,row in enumerate(my)
+    for i,col_name in enumerate(names):
+        e=Label(Teamwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+        e.grid(row=0,column=i)
+    i=2
+    for student in my_conn: 
+        for j in range(len(student)):
+            e = Entry(Teamwindow, width=10, fg='blue',text = student[j]) 
+            e.grid(row=i, column=j) 
+            e.insert(END, student[j])
+        i=i+1
+    Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,x=550, y=500)
+    Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,x=550, y=600)
+    Teamwindow.mainloop()
+    
+def teamADD():
     global window
     window = Tk()
     window.geometry('1450x800')
