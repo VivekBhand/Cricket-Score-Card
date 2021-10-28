@@ -43,7 +43,7 @@ def matches():
     root1.geometry('1450x800')
     root1.title('Match')
 
-    team1Lbl = Label(root1, text="Team1", font=('Times New Roman', 30))
+    team1Lbl = Label(root1, text="Team 1", font=('Times New Roman', 30))
     team1Lbl.place(relx=0.2, rely=0.1)
 
     team1idEntry = Entry(root1, width=10, font=('Times New Roman', 15))
@@ -104,7 +104,7 @@ def matches():
     dateEntry.place(relx=0.75, rely=0.3)
 
     #command=schedule_match yethe he button add karne
-    Button(root1, text="Submit",font=('Times New Roman', 15)).place(relx=0.40, rely=0.9)
+    Button(root1, text="Submit",command = AddMatch,font=('Times New Roman', 15)).place(relx=0.40, rely=0.9)
     Button(root1, text="Cancel", command=root1.destroy, font=('Times New Roman', 15)).place(relx=0.5, rely=0.9)
 
     #side 2 creation
@@ -177,6 +177,9 @@ def matches():
     opi5.place(relx=0.85, rely=0.8)
 
     root1.mainloop()
+
+def addMatch():
+    pass
 
 def refreshCoach():
     Coachwindow.destroy()

@@ -17,15 +17,25 @@ class Database:
 
     def createTable(self):
         self.foreign.execute("PRAGMA foreign_keys = ON")
-        # self.matchCursor.execute('''CREATE TABLE if not exists MATCH
-        #                         (
-        #                         MATCH_NO INTEGER PRIMARY KEY AUTOINCREMENT,
-        #                         HOME_TEAM VARCHAR(20) NOT NULL,
-        #                         AWAY_TEAM VARCHAR(20) NOT NULL,
-        #                         VENUE VARCHAR(30),
-        #                         DATE VARCHAR(15) NOT NULL,
-        #                         RESULT_STATUS VARCHAR(10) DEFAULT 'NO'
-        #                         );''')
+        self.matchCursor.execute('''CREATE TABLE if not exists Matches
+                                      (
+                                      MatchID INTEGER NOT NULL  ,
+                                      InningsID1 INTEGER,
+                                      InningsID2 INTEGER,
+                                      MATCHDATE VARCHAR(15),
+                                      MATCHTIME VARCHAR(15),
+                                      winnerID INT NOT NULL,
+                                      loserID INT NOT NULL,
+                                      u_id INTEGER,
+                                      
+                                      PRIMARY KEY(MatchID),
+                                      FOREIGN KEY (InningsID1) REFERENCES Innings(InningsID) on delete cascade,
+                                      FOREIGN KEY (InningsID2) REFERENCES Innings(InningsID) on delete cascade,
+                                      FOREIGN KEY (winnerID) REFERENCES Team(TeamID) on delete cascade,FOREIGN KEY (loserID) REFERENCES Team(TeamID) on delete cascade,
+                                      FOREIGN KEY (u_id) REFERENCES UMPIRE(u_id) on delete set NULL
+                                      
+                                      );
+                                      ''')
         self.teamCursor.execute('''CREATE TABLE if not exists Team
                                 (
                                 TeamID INT, 
