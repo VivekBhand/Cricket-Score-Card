@@ -9,6 +9,7 @@ class Database:
         self.teamCursor = self.conn.cursor()
         self.umpireCursor = self.conn.cursor()
         self.coachCursor = self.conn.cursor()
+        self.playerCursor = self.conn.cursor()
         self.deleteCoachCursor = self.conn.cursor()
         self.deleteUMPIRECursor = self.conn.cursor()
         self.deleteTeamCursor = self.conn.cursor()
@@ -53,6 +54,20 @@ class Database:
                                 PRIMARY KEY (C_id),
                                 FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete set NULL
                                 );''')
+
+        self.playerCursor.execute('''
+                                    CREATE TABLE if not exists PLAYER
+                                    (                                 
+                                    player_id INTEGER,                                
+                                    TeamID INTEGER ,                                 
+                                    playername VARCHAR(10),                                     
+                                    no_Of_runs INTEGER DEFAULT 0,
+                                    batting_avg INTEGER DEFAULT 0,                                 
+                                    bowling_avg INTEGER DEFAULT 0,
+                                    wickets INTEGER DEFAULT 0,                                 
+                                    PRIMARY KEY(player_id, TeamID),                                 
+                                    FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade
+                                    );''')
         # self.resultCursor.execute('''CREATE TABLE if not exists RESULT
         #                         (
         #                         MATCH_NO INTEGER,

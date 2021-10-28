@@ -183,37 +183,48 @@ def refreshCoach():
     show_coach()
 
 def show_coach():
-    connect = sqlite3.connect("cricketdbc.db")
-    conn = connect.cursor()
-    conn.row_factory = sqlite3.Row
-
-    cursor = conn.execute("SELECT * FROM Coach")
-
-    row = cursor.fetchone()
-    names = row.keys()
-    conn.execute("SELECT * FROM Coach")
 
     global Coachwindow
     Coachwindow = Tk()
     # Coachwindow.state("zoomed")
-    width = 25 * len(names)
-    dimensions = "500x"+str(width)
+    width = 1500
+    dimensions = "1500x"+str(width)
     Coachwindow.geometry(dimensions) 
 
+
+    my_connect = sqlite3.connect("cricketdbc.db")
+    my_conn = my_connect.cursor()
+    my_conn.row_factory = sqlite3.Row
+    my_conn.execute("SELECT * FROM Coach")
+    count=my_conn.fetchall()
+    #print(type(count))
+    #print(len(count))
+
+    if len(count) != 0:
+        cursor = my_conn.execute("SELECT * FROM Coach")
+        row = cursor.fetchone()
+        names = row.keys()
+        my_conn.execute("SELECT * FROM Coach")
+
     
-    for i,col_name in enumerate(names):
-        e=Label(Coachwindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
-        e.grid(row=0,column=i)
-    i=2
-    for student in conn: 
-        for j in range(len(student)):
-            e = Entry(Coachwindow, width=50, fg='blue',text = student[j]) 
-            e.grid(row=i, column=j) 
-            e.insert(END, student[j])
-        i=i+1
-    Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.600, rely=0.550)
-    Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.550, rely=0.600)
-    Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.800)
+        for i,col_name in enumerate(names):
+            e=Label(Coachwindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+            e.grid(row=0,column=i)
+        i=2
+        for entry in my_conn: 
+            for j in range(len(entry)):
+                e = Entry(Coachwindow, width=50, fg='blue',text = entry[j]) 
+                e.grid(row=i, column=j) 
+                e.insert(END, entry[j])
+            i=i+1
+        Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
+        Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
+        Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.700, rely=0.800)
+    else:
+        mb.showerror('Warning', "No coaches are added till now", parent=Coachwindow)
+        Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.500, rely=0.200)
+        Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.500, rely=0.350)
+        Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.50, rely=0.550)
     Coachwindow.mainloop()
 
 
@@ -270,47 +281,45 @@ def refreshumpire():
     umpires()
 def umpires():
 
+    global umpirewindow
+    umpirewindow = Tk()
+    width = 1500
+    dimensions = "1500x"+str(width)
+    umpirewindow.geometry(dimensions) 
+
     my_connect = sqlite3.connect("cricketdbc.db")
     my_conn = my_connect.cursor()
     my_conn.row_factory = sqlite3.Row
-
-    cursor = my_conn.execute("SELECT * FROM UMPIRE")
-
-    row = cursor.fetchone()
-    names = row.keys()
     my_conn.execute("SELECT * FROM UMPIRE")
+    count=my_conn.fetchall()
+    # print(type(count))
+    # print(len(count))
 
-    global umpirewindow
-    umpirewindow = Tk()
-    width = 25 * len(names)
-    dimensions = "500x"+str(width)
-    umpirewindow.geometry(dimensions) 
+    if len(count) != 0:
+        cursor = my_conn.execute("SELECT * FROM UMPIRE")
+        row = cursor.fetchone()
+        names = row.keys()
+        my_conn.execute("SELECT * FROM UMPIRE")
 
-    ####### end of connection ####
-
-    # r_set = my_conn.execute("SELECT * FROM Team")
-    # i = 0
-    # for student in r_set: 
-    #     for j in range(len(student)):
-    #         e = Label(Teamwindow,width=10, text=student[j]) 
-    #         e.grid(row=i, column=j) 
-    #     #e.insert(END, student[j])
-    #     i=i+1
-
-    #for i,row in enumerate(my)
-    for i,col_name in enumerate(names):
-        e=Label(umpirewindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
-        e.grid(row=0,column=i)
-    i=2
-    for student in my_conn: 
-        for j in range(len(student)):
-            e = Entry(umpirewindow, width=50, fg='blue',text = student[j]) 
-            e.grid(row=i, column=j) 
-            e.insert(END, student[j])
-        i=i+1
-    Button(umpirewindow, text="Refresh", font=('Times New Roman', 15),command = refreshumpire).place(bordermode=OUTSIDE,relx=0.550, rely=0.500)
-    Button(umpirewindow, text="Add or Delete Umpire", font=('Times New Roman', 15),command = UMPIRES).place(bordermode=OUTSIDE,relx=0.550, rely=0.5600)
-    Button(umpirewindow, text="Exit", font=('Times New Roman', 15),command = umpirewindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.700)
+        #for i,row in enumerate(my)
+        for i,col_name in enumerate(names):
+            e=Label(umpirewindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+            e.grid(row=0,column=i)
+        i=2
+        for entry in my_conn: 
+            for j in range(len(entry)):
+                e = Entry(umpirewindow, width=50, fg='blue',text = entry[j]) 
+                e.grid(row=i, column=j) 
+                e.insert(END, entry[j])
+            i=i+1
+        Button(umpirewindow, text="Refresh", font=('Times New Roman', 15),command = refreshumpire).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
+        Button(umpirewindow, text="Add or Delete Umpire", font=('Times New Roman', 15),command = UMPIRES).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
+        Button(umpirewindow, text="Exit", font=('Times New Roman', 15),command = umpirewindow.destroy).place(bordermode=OUTSIDE,relx=0.700, rely=0.800)
+    else:
+        mb.showerror('Warning', "No umpires are added till now", parent=umpirewindow)
+        Button(umpirewindow, text="Refresh", font=('Times New Roman', 15),command = refreshumpire).place(bordermode=OUTSIDE,relx=0.500, rely=0.200)
+        Button(umpirewindow, text="Add Umpire", font=('Times New Roman', 15),command = UMPIRES).place(bordermode=OUTSIDE,relx=0.500, rely=0.450)
+        Button(umpirewindow, text="Exit", font=('Times New Roman', 15),command = umpirewindow.destroy).place(bordermode=OUTSIDE,relx=0.50, rely=0.650)
     umpirewindow.mainloop()
 
 
@@ -328,49 +337,49 @@ def deletecoa():
 def refreshTeam():
     Teamwindow.destroy()
     TEAM()
+
 def TEAM():
+
+    global Teamwindow
+    Teamwindow = Tk()
+    width = 1500
+    dimensions = "1500x"+str(width)
+    Teamwindow.geometry(dimensions)
 
     my_connect = sqlite3.connect("cricketdbc.db")
     my_conn = my_connect.cursor()
     my_conn.row_factory = sqlite3.Row
-
-    cursor = my_conn.execute("SELECT * FROM Team")
-
-    row = cursor.fetchone()
-    names = row.keys()
     my_conn.execute("SELECT * FROM Team")
+    count=my_conn.fetchall()
+    # print(type(count))
+    # print(len(count))
 
-    global Teamwindow
-    Teamwindow = Tk()
-    width = 25 * len(names)
-    dimensions = "500x"+str(width)
-    Teamwindow.geometry(dimensions) 
+    if len(count) != 0:
+        cursor = my_conn.execute("SELECT * FROM Team")
+        row = cursor.fetchone()
+        names = row.keys()
+        my_conn.execute("SELECT * FROM Team")
 
-    ####### end of connection ####
-
-    # r_set = my_conn.execute("SELECT * FROM Team")
-    # i = 0
-    # for student in r_set: 
-    #     for j in range(len(student)):
-    #         e = Label(Teamwindow,width=10, text=student[j]) 
-    #         e.grid(row=i, column=j) 
-    #     #e.insert(END, student[j])
-    #     i=i+1
 
     #for i,row in enumerate(my)
-    for i,col_name in enumerate(names):
-        e=Label(Teamwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
-        e.grid(row=0,column=i)
-    i=2
-    for student in my_conn: 
-        for j in range(len(student)):
-            e = Entry(Teamwindow, width=10, fg='blue',text = student[j]) 
-            e.grid(row=i, column=j) 
-            e.insert(END, student[j])
-        i=i+1
-    Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,relx=0.550, rely=0.500)
-    Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.550, rely=0.600)
-    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.550, rely=0.800)
+        for i,col_name in enumerate(names):
+            e=Label(Teamwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+            e.grid(row=0,column=i)
+        i=2
+        for entry in my_conn: 
+            for j in range(len(entry)):
+                e = Entry(Teamwindow, width=10, fg='blue',text = entry[j]) 
+                e.grid(row=i, column=j) 
+                e.insert(END, entry[j])
+            i=i+1
+        Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
+        Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
+        Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.700, rely=0.800)
+    else:
+        mb.showerror('Warning', "No teams are added till now", parent=Teamwindow)
+        Button(Teamwindow, text="Refresh", font=('Times New Roman', 15),command = refreshTeam).place(bordermode=OUTSIDE,relx=0.500, rely=0.200)
+        Button(Teamwindow, text="Add Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.500, rely=0.350)
+        Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.50, rely=0.550)
     Teamwindow.mainloop()
     
 def teamADD():
@@ -459,7 +468,7 @@ def delete():
     delID = team_Delete.get()
     if delID != '':
         dbc.deleteTeam((delID))
-        mb.showinfo('Done!', "Team delted", parent=window)
+        mb.showinfo('Done!', "Team deleted", parent=window)
         window.destroy()
 
     else:
@@ -520,7 +529,7 @@ def umpiredelete():
     uID = u_deleteentry.get()
     if uID != '':
         dbc.deleteUMPIRE((uID))
-        mb.showinfo('Done!', "Umpire delted", parent=show_res_window)
+        mb.showinfo('Done!', "Umpire deleted", parent=show_res_window)
         show_res_window.destroy()
 
     else:
