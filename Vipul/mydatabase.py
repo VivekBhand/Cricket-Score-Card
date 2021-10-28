@@ -101,8 +101,13 @@ class Database:
         self.umpireCursor.execute('''commit;''')
 
     def insertCoach(self,values):
-        self.coachCursor.execute('''INSERT INTO Coach(C_id,C_name,TeamID) VALUES(?,?,?);''', values)
-        self.coachCursor.execute('''commit;''')
+        try:
+            self.coachCursor.execute('''INSERT INTO Coach(C_id,C_name,TeamID) VALUES(?,?,?);''', values)
+            self.coachCursor.execute('''commit;''')
+        except:
+            # mb.showerror('Warning', "No team with that ID, enter valid ID", parent=Coachwindow)
+            print("Enter valid TeamID")
+    
     # def insertMatch(self, values):
     #     self.matchCursor.execute('''INSERT INTO MATCH(HOME_TEAM, AWAY_TEAM, VENUE, DATE) VALUES(?,?,?,?);''', values)
     #     self.matchCursor.execute('''commit;''')

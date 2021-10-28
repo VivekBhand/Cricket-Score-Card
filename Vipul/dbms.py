@@ -215,7 +215,12 @@ def show_coach():
             for j in range(len(entry)):
                 e = Entry(Coachwindow, width=50, fg='blue',text = entry[j]) 
                 e.grid(row=i, column=j) 
-                e.insert(END, entry[j])
+                try:
+                    e.insert(END, student[j])
+                except:
+                    e.insert(END, "NULL")
+                    continue
+
             i=i+1
         Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
         Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
@@ -485,6 +490,7 @@ def UMPIRES():
     global u_idEntry
     global u_nameentry
     global u_matchesentry
+    global u_deleteentry
 
     titlelbl = Label(show_res_window, text="UMPIRES", font=('Times New Roman', 40))
     titlelbl.place(x=600, y=50)
@@ -527,6 +533,8 @@ def UMPIRES():
 
 def umpiredelete():
     uID = u_deleteentry.get()
+    print(uID)
+    print(type(uID))
     if uID != '':
         dbc.deleteUMPIRE((uID))
         mb.showinfo('Done!', "Umpire deleted", parent=show_res_window)
