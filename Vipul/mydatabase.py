@@ -4,7 +4,7 @@ import sqlite3
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect("cricketdbc.db")
-        # self.matchCursor = self.conn.cursor()
+        self.matchCursor = self.conn.cursor()
         # self.resultCursor = self.conn.cursor()
         self.teamCursor = self.conn.cursor()
         self.umpireCursor = self.conn.cursor()
