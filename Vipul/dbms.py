@@ -476,6 +476,7 @@ def UMPIRES():
     global u_idEntry
     global u_nameentry
     global u_matchesentry
+    global u_deleteentry
 
     titlelbl = Label(show_res_window, text="UMPIRES", font=('Times New Roman', 40))
     titlelbl.place(x=600, y=50)
