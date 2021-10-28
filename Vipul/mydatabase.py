@@ -11,8 +11,11 @@ class Database:
         self.coachCursor = self.conn.cursor()
         self.deleteCoachCursor = self.conn.cursor()
         self.deleteUMPIRECursor = self.conn.cursor()
+        self.deleteTeamCursor = self.conn.cursor()
+        self.foreign = self.conn.cursor()
 
     def createTable(self):
+        self.foreign.execute("PRAGMA foreign_keys = ON")
         # self.matchCursor.execute('''CREATE TABLE if not exists MATCH
         #                         (
         #                         MATCH_NO INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +36,7 @@ class Database:
                                 T20 VARCHAR(10),
                                 Test VARCHAR(10),
                                 PRIMARY KEY (TeamID)
-                                                  );''')
+                                                );''')
 
         self.umpireCursor.execute('''CREATE TABLE if not exists UMPIRE
                                 (
@@ -61,6 +64,10 @@ class Database:
         #                         PRIMARY KEY(MATCH_NO)
         #                         );''')
 
+
+    def deleteTeam(self,values):
+        self.deleteTeamCursor.execute('''DELETE FROM Team where TeamID = ?;''',[values])
+        self.deleteTeamCursor.execute('''commit;''')
 
     def deleteCoach(self,values):
         self.deleteCoachCursor.execute('''DELETE FROM Coach where C_id = ? ;''',[values])
