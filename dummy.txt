@@ -25,7 +25,7 @@ alter table PLAYER add no_of_matches int;
     
 
 
-CREATE TABLE if not exists Innings
+pCREATE TABLE if not exists Innings
                                       (
                                       InningsID INTEGER ,
                                       TeamID INTEGER NOT NULL,

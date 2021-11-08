@@ -10,6 +10,7 @@ class Database:
         self.umpireCursor = self.conn.cursor()
         self.coachCursor = self.conn.cursor()
         self.playerCursor = self.conn.cursor()
+        self.inningsCursor = self.conn.cursor()
         self.deleteCoachCursor = self.conn.cursor()
         self.deleteUMPIRECursor = self.conn.cursor()
         self.deleteTeamCursor = self.conn.cursor()
@@ -17,11 +18,10 @@ class Database:
 
     def createTable(self):
         self.foreign.execute("PRAGMA foreign_keys = ON")
-        self.matchCursor.execute('''CREATE TABLE if not exists Matches
-                                      (
-                                      MatchID INTEGER NOT NULL  ,
-                                      InningsID1 INTEGER,
-                                      InningsID2 INTEGER,
+        self.matchCursor.execute('''CREATE TABLE if not exists Matches(
+                                    MatchID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                      InningsID1 VARCHAR(25),
+                                      InningsID2 VARCHAR(25),
                                       MATCHDATE VARCHAR(15),
                                       MATCHTIME VARCHAR(15),
                                       winnerID INT NOT NULL,
@@ -68,27 +68,43 @@ class Database:
         self.playerCursor.execute('''
                                     CREATE TABLE if not exists PLAYER
                                     (                                 
-                                    player_id INTEGER,                                
+                                    player_id INTEGER PRIMARY KEY,                                
                                     TeamID INTEGER ,                                 
                                     playername VARCHAR(10),                                     
                                     no_Of_runs INTEGER DEFAULT 0,
                                     batting_avg INTEGER DEFAULT 0,                                 
                                     bowling_avg INTEGER DEFAULT 0,
                                     wickets INTEGER DEFAULT 0,                                 
-                                    PRIMARY KEY(player_id, TeamID),                                 
+                                    PRIMARY KEY(player_id),                                 
                                     FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade
                                     );''')
-        # self.resultCursor.execute('''CREATE TABLE if not exists RESULT
-        #                         (
-        #                         MATCH_NO INTEGER,
-        #                         SCORE1 INTEGER NOT NULL,
-        #                         SCORE2 INTEGER NOT NULL,
-        #                         MOM VARCHAR(25) NOT NULL,
-        #                         WINNER VARCHAR(20) NOT NULL,
-        #                         FOREIGN KEY(MATCH_NO) REFERENCES MATCH(MATCH_NO),
-        #                         PRIMARY KEY(MATCH_NO)
-        #                         );''')
+        self.inningsCursor.execute('''CREATE TABLE if not exists Innings
+                                      (
+                                      InningsID VARCHAR(25),
+                                      TeamID INTEGER NOT NULL,
+                                      player_id INTEGER NOT NULL,
+                                      PlayerScore INTEGER,
+                                      PlayerWicket INTEGER,
+                                      PRIMARY KEY (InningsID,player_id),
+                                      FOREIGN KEY (TeamID) REFERENCES Team(TeamID) on delete cascade,
+                                        FOREIGN KEY (player_id) REFERENCES PLAYER(player_id) on delete cascade
+                                      );''')
 
+
+    def insertInnings(self,values):
+        self.inningsCursor.execute('''INSERT INTO Innings(TeamID, player_id, PlayerScore, PlayerWicket) VALUES(?,?,?,?);''', values)
+        self.inningsCursor.execute('''commit;''')
+
+    def addRun(self,pid,runs):
+        previous_run = self.playerCursor.execute('''select no_Of_runs from PLAYER where PlayerID = ?''',pid)
+        self.playerCursor.execute('''UPDATE PLAYER SET no_Of_runs = ? WHERE player_id = ?;''' ,(previous_run+runs,pid) )
+        self.playerCursor.execute('''commit;''')
+        # "UPDATE BATSMAN SET Innings = '%d' WHERE PID = '%d'" %(result[0]['Innings']+1 , pid)
+    def addWicket(self,pid,wickets):
+        previous_wicket = self.playerCursor.execute('''select wickets from PLAYER where PlayerID = ?''',pid)
+        self.playerCursor.execute('''UPDATE PLAYER SET wickets = ? WHERE player_id = ?;''' ,(previous_wicket+wickets,pid) )
+        self.playerCursor.execute('''commit;''')
+        # "UPDATE BATSMAN SET Innings = '%d' WHERE PID = '%d'" %(result[0]['Innings']+1 , pid)
 
     def deleteTeam(self,values):
         self.deleteTeamCursor.execute('''DELETE FROM Team where TeamID = ?;''',[values])

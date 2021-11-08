@@ -103,10 +103,6 @@ def matches():
     dateEntry = Entry(root1, width=10, font=('Times New Roman', 15))
     dateEntry.place(relx=0.75, rely=0.3)
 
-    #command=schedule_match yethe he button add karne
-    Button(root1, text="Submit",command = AddMatch,font=('Times New Roman', 15)).place(relx=0.40, rely=0.9)
-    Button(root1, text="Cancel", command=root1.destroy, font=('Times New Roman', 15)).place(relx=0.5, rely=0.9)
-
     #side 2 creation
     team2Lbl = Label(root1, text="Team2", font=('Times New Roman', 30))
     team2Lbl.place(relx=0.7, rely=0.1)
@@ -176,10 +172,65 @@ def matches():
     opi5 = Entry(root1, width=10, font=('Times New Roman', 15))
     opi5.place(relx=0.85, rely=0.8)
 
+    #command=schedule_match yethe he button add karne
+    Button(root1, text="Submit",command = addMatch,font=('Times New Roman', 15)).place(relx=0.40, rely=0.9)
+    Button(root1, text="Cancel", command=root1.destroy, font=('Times New Roman', 15)).place(relx=0.5, rely=0.9)
+
     root1.mainloop()
 
 def addMatch():
-    pass
+    score_p1 = int(p1.get())
+    score_p2 = int(p2.get())
+    score_p3 = int(p3.get())
+    score_p4 = int(p4.get())
+    score_p5 = int(p5.get())
+    score_op1 = int(op1.get())
+    score_op2 = int(op2.get())
+    score_op3 = int(op3.get())
+    score_op4 = int(op4.get())
+    score_op5 = int(op5.get())
+
+    pid_pi1 = int(pi1.get())
+    pid_pi2 = int(pi2.get())
+    pid_pi3 = int(pi3.get())
+    pid_pi4 = int(pi4.get())
+    pid_pi5 = int(pi5.get())
+    pid_opi1 = int(opi1.get())
+    pid_opi2 = int(opi2.get())
+    pid_opi3 = int(opi3.get())
+    pid_opi4 = int(opi4.get())
+    pid_opi5 = int(opi5.get())
+
+    dbc.addRun(pid_pi1,score_p1);
+    dbc.addRun(pid_pi2,score_p2);
+    dbc.addRun(pid_pi3,score_p3);
+    dbc.addWicket(pid_pi4,score_p4);
+    dbc.addWicket(pid_pi5,score_p5);
+    dbc.addRun(pid_opi1,score_op1);
+    dbc.addRun(pid_opi2,score_op2);
+    dbc.addRun(pid_opi3,score_op3);
+    dbc.addWicket(pid_opi4,score_op4);
+    dbc.addWicket(pid_opi5,score_op5);
+    
+    Team1_ID = int(team1idEntry.get())
+    Team2_ID = int(team2idEntry.get())
+
+    venue = venueEntry.get()
+    date = dateEntry.get()
+    dbc.insertInnings(Team1_ID,pid_pi1,score_p1,)
+    dbc.insertInnings(Team1_ID,pid_pi2,score_p2,)
+    dbc.insertInnings(Team1_ID,pid_pi3,score_p3,)
+    dbc.insertInnings(Team1_ID,pid_opi1,score_op1,)
+    dbc.insertInnings(Team1_ID,pid_opi2,score_op2,)
+    dbc.insertInnings(Team1_ID,pid_opi3,score_op3,)
+    dbc.insertInnings(Team1_ID,pid_pi4,0,score_p4)
+    dbc.insertInnings(Team1_ID,pid_pi5,0,score_p2)
+    dbc.insertInnings(Team1_ID,pid_opi4,0,score_op4)
+    dbc.insertInnings(Team1_ID,pid_opi5,0,score_op5)
+
+    
+    dbc.insertMatch()
+
 
 def refreshCoach():
     Coachwindow.destroy()
@@ -193,47 +244,94 @@ def show_coach():
     width = 1500
     dimensions = "1500x"+str(width)
     Coachwindow.geometry(dimensions) 
+    connect = sqlite3.connect("cricketdbc.db")
+    conn = connect.cursor()
+    conn.row_factory = sqlite3.Row
 
+    cursor = conn.execute("SELECT * FROM Coach")
 
-    my_connect = sqlite3.connect("cricketdbc.db")
-    my_conn = my_connect.cursor()
-    my_conn.row_factory = sqlite3.Row
-    my_conn.execute("SELECT * FROM Coach")
-    count=my_conn.fetchall()
-    #print(type(count))
-    #print(len(count))
-
-    if len(count) != 0:
-        cursor = my_conn.execute("SELECT * FROM Coach")
+    count=conn.fetchall()
+    if len(count):
+        cursor = conn.execute("SELECT * FROM Coach")
         row = cursor.fetchone()
         names = row.keys()
-        my_conn.execute("SELECT * FROM Coach")
+        conn.execute("SELECT * FROM Coach")
 
-    
+        
+
+        
         for i,col_name in enumerate(names):
             e=Label(Coachwindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
             e.grid(row=0,column=i)
         i=2
-        for entry in my_conn: 
+        for entry in conn: 
             for j in range(len(entry)):
                 e = Entry(Coachwindow, width=50, fg='blue',text = entry[j]) 
                 e.grid(row=i, column=j) 
                 try:
-                    e.insert(END, student[j])
+                    e.insert(END, entry[j])
+                    print(entry[j])
                 except:
                     e.insert(END, "NULL")
                     continue
-
             i=i+1
-        Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
-        Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
-        Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.700, rely=0.800)
+        Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.250, rely=0.80)
+        Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.50, rely=0.80)
+        Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.750, rely=0.800)
     else:
         mb.showerror('Warning', "No coaches are added till now", parent=Coachwindow)
         Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.500, rely=0.200)
         Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.500, rely=0.350)
         Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.50, rely=0.550)
+    
     Coachwindow.mainloop()
+    # global Coachwindow
+    # Coachwindow = Tk()
+    # # Coachwindow.state("zoomed")
+    # width = 1500
+    # dimensions = "1500x"+str(width)
+    # Coachwindow.geometry(dimensions) 
+
+
+    # my_connect = sqlite3.connect("cricketdbc.db")
+    # my_conn = my_connect.cursor()
+    # my_conn.row_factory = sqlite3.Row
+    # my_conn.execute("SELECT * FROM Coach")
+    # count=my_conn.fetchall()
+    # #print(type(count))
+    # #print(len(count))
+
+    # if len(count) != 0:
+    #     cursor = my_conn.execute("SELECT * FROM Coach")
+    #     row = cursor.fetchone()
+    #     names = row.keys()
+    #     my_conn.execute("SELECT * FROM Coach")
+
+    
+    #     for i in range (len(names)):
+    #         e=Label(Coachwindow,width=50,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
+    #         e.grid(row=0,column=i)
+    #     i=2
+    #     for entry in my_conn: 
+    #         for j in range(len(entry)):
+    #             e = Entry(Coachwindow, width=50, fg='blue',text = entry[j]) 
+    #             e.grid(row=i, column=j) 
+    #             try:
+    #                 e.insert(END, student[j])
+    #             except:
+    #                 e.insert(END, "NULL")
+    #                 continue
+
+    #         i=i+1
+    #     Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.200, rely=0.800)
+    #     Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.450, rely=0.800)
+    #     Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.700, rely=0.800)
+    # else:
+    #     mb.showerror('Warning', "No coaches are added till now", parent=Coachwindow)
+    #     Button(Coachwindow, text="Refresh", font=('Times New Roman', 15),command = refreshCoach).place(bordermode=OUTSIDE,relx=0.500, rely=0.200)
+    #     Button(Coachwindow, text="Add Coach", font=('Times New Roman', 15),command = coach).place(bordermode=OUTSIDE,relx=0.500, rely=0.350)
+    #     Button(Coachwindow, text="Exit", font=('Times New Roman', 15),command = Coachwindow.destroy).place(bordermode=OUTSIDE,relx=0.50, rely=0.550)
+    # Coachwindow.mainloop()
 
 
 
@@ -283,6 +381,7 @@ def coach():
     #delete button
     Button(root2, text="DELETE", font=('Times New Roman', 15), command=deletecoa).place(x=350, y=550)
     root2.mainloop()
+    
 
 def refreshumpire():
     umpirewindow.destroy()
@@ -368,9 +467,8 @@ def TEAM():
         names = row.keys()
         my_conn.execute("SELECT * FROM Team")
 
-
     #for i,row in enumerate(my)
-        for i,col_name in enumerate(names):
+        for i in range (len(names)):
             e=Label(Teamwindow,width=10,text=names[i],borderwidth=2, relief='ridge',anchor='w',bg='yellow')
             e.grid(row=0,column=i)
         i=2
