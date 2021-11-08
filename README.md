@@ -18,10 +18,11 @@ DBMS mini project
 
 
     4. Relational schemas obtained from ER.
+        ![ER1](https://user-images.githubusercontent.com/68386459/140687025-d11a1ac2-f589-44ae-ab57-21e7a3b99e80.png)
 
-  [
 
     5. Normalized Relational schemas.
+    ![NORMAL](https://user-images.githubusercontent.com/68386459/140687045-00bfa089-d985-4c6e-885d-7d21e6d47032.png)
     
     
 
