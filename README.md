@@ -1,6 +1,9 @@
-# Cricket-Score-Card
-DBMS mini project
+## Cricket-Score-Card
+# DBMS mini project
 
+Vivek Bhand : 111903129
+Vipin Ingle : 111903125
+Vipul Gaikwad : 111903126
     1. Problem statement
         Cricket score card - A database system to keep track of cricket tournament statistics.
 
