@@ -5,6 +5,15 @@ from tkinter import messagebox as mb
 from mydatabase import Database
 from tkinter.constants import DISABLED, NORMAL
 import sqlite3
+from PIL import Image, ImageTk
+
+def resize_image(event):
+    new_width = event.width
+    new_height = event.height
+    image = copy_of_image.resize((new_width, new_height))
+    photo = ImageTk.PhotoImage(image)
+    lbl.config(image = photo)
+    lbl.image = photo #avoid garbage collection
 
 
 def live_match():
@@ -57,19 +66,19 @@ def live_match():
     matchlabel.place(x=200, y=100)
 
     matchid = Entry(live_win,width=8, font=('Times New Roman', 14))
-    matchid.place(x=300, y=100)
+    matchid.place(x=400, y=100)
 
     team1idlabel = Label(live_win, text='Team ID 1', font=('Times New Roman', 15))
-    team1idlabel.place(x=450, y=100)
+    team1idlabel.place(x=500, y=100)
 
     team1id = Entry(live_win,width=8, font=('Times New Roman', 14))
-    team1id.place(x=550, y=100)
+    team1id.place(x=600, y=100)
 
     team2idlabel = Label(live_win, text='Team ID 2', font=('Times New Roman', 15))
     team2idlabel.place(x=700, y=100)
 
     team2id = Entry(live_win,width=8, font=('Times New Roman', 14))
-    team2id.place(x=850, y=100)
+    team2id.place(x=800, y=100)
 
     axisy = 180
     playerIDlabel = Label(live_win, text='Player 1', font=('Times New Roman', 15))
@@ -173,7 +182,7 @@ def live_match():
     Ulabel.place(x=1000, y=100)
 
     Uentry = Entry(live_win,width=8, font=('Times New Roman', 14))
-    Uentry.place(x=1150, y=100)
+    Uentry.place(x=1100, y=100)
 
     submitResults = Button(live_win, text="Submit Results", font=('Times New Roman', 14), command=submit_result)
     submitResults.place(x=1100, y=630)
@@ -250,7 +259,7 @@ def submit_result():
         winner = team2
     dbc.insertResult((mtid,team1,score1,team2,score2,winner,utid,date,venue))
     dbc.updateUmpire((utid))
-    dbc.updateTeam((team1,team2,mtid))
+    dbc.updateTeam((team1,team2,mtid,winner))
     mb.showinfo("Congratulations!", "Winning Status : "+ str(winner), parent=live_win)
 
 
@@ -317,38 +326,38 @@ def coach():
     root2.title('Coach')
 
     CoachLbl = Label(root2, text="COACH", font=('Times New Roman', 30))
-    CoachLbl.place(relx=0.2, rely=0.1)
+    CoachLbl.place(relx=0.45, rely=0.1)
 
     CoachIDLbl = Label(root2, text="Coach ID: ", font=('Times New Roman', 15))
-    CoachIDLbl.place(relx=0.1, rely=0.4)
+    CoachIDLbl.place(relx=0.3, rely=0.4)
 
     CoachIDEntry = Entry(root2, width=25, font=('Times New Roman', 15))
-    CoachIDEntry.place(relx=0.20, rely=0.4)
+    CoachIDEntry.place(relx=0.5, rely=0.4)
 
     CoachNameLbl = Label(root2, text="Coach Name: ", font=('Times New Roman', 15))
-    CoachNameLbl.place(relx=0.1, rely=0.5)
+    CoachNameLbl.place(relx=0.3, rely=0.5)
 
     CoachNameEntry = Entry(root2, width=25, font=('Times New Roman', 15))
-    CoachNameEntry.place(relx=0.20, rely=0.5)
+    CoachNameEntry.place(relx=0.5, rely=0.5)
 
     teamIDLbl = Label(root2, text="Team ID: ", font=('Times New Roman', 15))
-    teamIDLbl.place(relx=0.1, rely=0.6)
+    teamIDLbl.place(relx=0.3, rely=0.6)
 
     teamIDEntry = Entry(root2, width=25, font=('Times New Roman', 15))
-    teamIDEntry.place(relx=0.20, rely=0.6)
+    teamIDEntry.place(relx=0.5, rely=0.6)
 
-    Button(root2, text="Submit", font=('Times New Roman', 15),command=coachentry).place(x=550, y=650)
-    Button(root2, text="Cancel", font=('Times New Roman', 15), command=root2.destroy).place(x=700, y=650)
+    Button(root2, text="Submit", font=('Times New Roman', 15),command=coachentry).place(relx=0.5, rely=0.7)
+    Button(root2, text="Cancel", font=('Times New Roman', 15), command=root2.destroy).place(relx=0.65, rely=0.7)
 
 
     #delete the coach entry
     delcoach = Label(root2, text="Deletion ID: ", font=('Times New Roman', 15))
-    delcoach.place(relx=0.1, rely=0.7)
+    delcoach.place(relx=0.40, rely=0.9)
 
     deleteCoach = Entry(root2, width=15, font=('Times New Roman', 15))
-    deleteCoach.place(relx=0.20, rely=0.7)
+    deleteCoach.place(relx=0.50, rely=0.9)
     #delete button
-    Button(root2, text="DELETE", font=('Times New Roman', 15), command=deletecoa).place(x=450, y=550)
+    Button(root2, text="DELETE", font=('Times New Roman', 15), command=deletecoa).place(relx=0.65, rely=0.9)
     root2.mainloop()
 
 def refreshumpire():
@@ -434,10 +443,10 @@ def TEAM():
     indiplayer.place(relx=0.45, rely=0.6)
 
 
-    Button(Teamwindow, text="SHOW", font=('Times New Roman', 15),command = show_t).place(bordermode=OUTSIDE,relx=0.350, rely=0.800)
+    Button(Teamwindow, text="SHOW", font=('Times New Roman', 15),command = show_t).place(bordermode=OUTSIDE,relx=0.350, rely=0.400)
     Button(Teamwindow, text="SHOW Teamwise", font=('Times New Roman', 15),command = show_individual).place(bordermode=OUTSIDE,relx=0.650, rely=0.600)
-    Button(Teamwindow, text="Add or Delete Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.500, rely=0.800)
-    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.750, rely=0.800)
+    Button(Teamwindow, text="Add or Delete Team", font=('Times New Roman', 15),command = teamADD).place(bordermode=OUTSIDE,relx=0.500, rely=0.400)
+    Button(Teamwindow, text="Exit", font=('Times New Roman', 15),command = Teamwindow.destroy).place(bordermode=OUTSIDE,relx=0.750, rely=0.400)
     Teamwindow.mainloop()
 
 def show_individual():
@@ -549,7 +558,7 @@ def teamADD():
     global team_Delete
 
     titlelbl = Label(window, text="TEAM", font=('Times New Roman', 40))
-    titlelbl.place(x=600, y=30)
+    titlelbl.place(x=600, y=50)
 
     team_id = Label(window, text="TEAM ID: ", font=('Times New Roman', 15))
     team_id.place(x=450, y=100)
@@ -601,16 +610,16 @@ def teamADD():
 
     #team delete
     team_del = Label(window, text="Enter ID: ", font=('Times New Roman', 15))
-    team_del.place(x=475, y=550)
+    team_del.place(x=475, y=600)
 
     team_Delete = Entry(window, width=30, font=('Times New Roman', 15))
-    team_Delete.place(x=600, y=550)
+    team_Delete.place(x=600, y=600)
     #delete button
-    Button(window, text="DELETE", font=('Times New Roman', 15),command = delete).place(x=950, y=550)
+    Button(window, text="DELETE", font=('Times New Roman', 15),command = delete).place(x=950, y=600)
     
     # command=add_result
-    Button(window, text="Submit", font=('Times New Roman', 15),command = teamentry).place(x=550, y=600)
-    Button(window, text="Cancel", font=('Times New Roman', 15), command=window.destroy).place(x=700, y=600)
+    Button(window, text="Submit", font=('Times New Roman', 15),command = teamentry).place(x=550, y=500)
+    Button(window, text="Cancel", font=('Times New Roman', 15), command=window.destroy).place(x=700, y=500)
 
     window.mainloop()
 
@@ -660,18 +669,18 @@ def UMPIRES():
     u_matchesentry.place(x=600, y=250)
 
     u_deletelbl = Label(show_res_window, text="DELETION ID: ", font=('Times New Roman', 15))
-    u_deletelbl.place(x=400, y=350)
+    u_deletelbl.place(x=400, y=550)
 
     u_deleteentry = Entry(show_res_window, font=('Times New Roman', 15),  width=15)
-    u_deleteentry.place(x=600, y=350)
+    u_deleteentry.place(x=600, y=550)
     
     
     
-    Button(show_res_window, text="DELETE", font=('Times New Roman', 15),command = umpiredelete).place(x=800, y=350)
+    Button(show_res_window, text="DELETE", font=('Times New Roman', 15),command = umpiredelete).place(x=800, y=550)
     
     # , command=add_result
-    Button(show_res_window, text="Submit", font=('Times New Roman', 15),command=umpireentry).place(x=550, y=550)
-    Button(show_res_window, text="Cancel", font=('Times New Roman', 15), command=show_res_window.destroy).place(x=700, y=550)
+    Button(show_res_window, text="Submit", font=('Times New Roman', 15),command=umpireentry).place(x=550, y=350)
+    Button(show_res_window, text="Cancel", font=('Times New Roman', 15), command=show_res_window.destroy).place(x=700, y=350)
 
 
     show_res_window.mainloop()
@@ -721,7 +730,7 @@ def show_matches_screen():
     tree.heading("3", text="Score 1")
     tree.heading("4", text="Team 2")
     tree.heading("5", text="Score 2")
-    tree.heading("6", text="Winner Team ID")
+    tree.heading("6", text="Winner Team")
     tree.heading("7", text="Umpire ID")
     tree.heading("8", text="Date")
     tree.heading("9", text="Venue")
@@ -796,7 +805,6 @@ def add_player():
     pwindow = Tk()
     pwindow.geometry('1450x800')
     pwindow.title('PLAYER')
-    
 
     global id_playerEntryRes
     global id_teamEntryRes
@@ -807,7 +815,7 @@ def add_player():
     global jerseyentry
     
     titlelbl = Label(pwindow, text="PLAYER", font=('Times New Roman', 40))
-    titlelbl.place(x=600, y=30)
+    titlelbl.place(x=600, y=50)
 
     player_id = Label(pwindow, text="PLAYER ID: ", font=('Times New Roman', 15))
     player_id.place(x=450, y=100)
@@ -923,6 +931,8 @@ def exitP():
     root.destroy()
 
 
+
+
 root = tkinter.Tk()
 root.geometry('1450x800')
 root.title('Cricket Score Card')
@@ -930,8 +940,15 @@ root.title('Cricket Score Card')
 dbc = Database()
 dbc.createTable()
 
-image_file = PhotoImage(file="homepage.png")
-lbl = Label(root, image=image_file).place(relx=0, rely=0)
+image = Image.open('home.png')
+copy_of_image = image.copy()
+photo = ImageTk.PhotoImage(image)
+lbl = ttk.Label(root, image = photo)
+lbl.bind('<Configure>', resize_image)
+lbl.pack(fill=BOTH, expand = YES)
+
+# image_file = PhotoImage(file="homepage.png")
+# lbl = Label(root, image=image_file).place(relx=0, rely=0)
 
 Label(lbl, text="Cricket Score Card", font=('Times New Roman', 50)).place(relx=0.3, rely=0.1)
 
@@ -943,7 +960,6 @@ Button(lbl, text="Live Match", font=('Times New Roman', 20),command=live_match).
 
 Button(lbl, text="Team", font=('Times New Roman', 20),command=TEAM).place(relx=0.55, rely=0.5)
 
-# , command=coach_screen
 Button(lbl, text="Coach", font=('Times New Roman', 20),command=show_coach).place(relx=0.67,rely=0.5)
 
 Button(lbl, text="PLAYER", font=('Times New Roman', 20),command=add_player).place(relx=0.8,rely=0.5)

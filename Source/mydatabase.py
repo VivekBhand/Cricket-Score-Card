@@ -69,6 +69,7 @@ class Database:
                                  u_id integer,
                                  date varchar(10),
                                  venue varchar(10),
+                                 primary key (m_id),
                                  FOREIGN KEY (team1) REFERENCES Team(TeamID) on delete set NULL,
                                  FOREIGN KEY (team2) REFERENCES Team(TeamID) on delete set NULL,
                                  FOREIGN KEY (winner) REFERENCES Team(TeamID) on delete set NULL,
@@ -78,7 +79,8 @@ class Database:
         try:
             self.playerCursor.execute('''INSERT INTO PLAYER(player_id,TeamID,playername, noofmatches,noofruns,noofwickets,jerseyno) VALUES(?,?,?,?,?,?,?);''', values)
         except:
-            print("ALREADY A PLAYER WITH THE SAME ID")
+            # print("ALREADY A PLAYER WITH THE SAME ID")
+            mb.showerror('Warning', "ALREADY A PLAYER WITH THE SAME ID")
         self.playerCursor.execute('''commit;''')
   
     def insertResult(self,values):
@@ -116,30 +118,51 @@ class Database:
         self.umpireCursor.execute('''commit;''')
     
     def updateTeam(self,values):
-        print(values[0])
-        print(type(values[0]))
-        print(values[1])
-        print(type(values[1]))
-        print(values[2])
-        print(type(values[2]))
+        # print(values[0])
+        # print(type(values[0]))
+        # print(values[1])
+        # print(type(values[1]))
+        # print(values[2])
+        # print(type(values[2]))
+        # print(values[3])
     
         self.teamCursor.execute('''SELECT NoOfMatches FROM Team WHERE TeamID = ?''',(values[0],))
         a = self.teamCursor.fetchall()
-        print(a)
-        print(a[0][0])
-        print(type(a[0][0]))
+        # print(a)
+        # print(a[0][0])
+        # print(type(a[0][0]))
         # self.teamCursor.execute('''SELECT NoOfWin FROM Team WHERE TeamID = ?''',(values[0],))
         self.teamCursor.execute('''SELECT NoOfMatches FROM Team WHERE TeamID = ?''',(values[1],))
         b = self.teamCursor.fetchall()
-        print(b)
-        print(b[0][0])
-        print(type(b[0][0]))
-        print([values][0][0])
-        print(type([values][0]))
+
+        # self.teamCursor.execute('''SELECT NoOfWin FROM Team WHERE TeamID = ?''',(values[0],))
+        # i = self.teamCursor.fetchall()
+        if values[3] == values[0]:
+            winner = values[0]
+            loser = values[1]
+            # self.teamCursor.execute('''UPDATE Team SET NoOfWin = ? WHERE TeamID = ?''',(int(i[0][0]) + 1, values[0]))
+            # self.teamCursor.execute('''UPDATE Team SET NoOfLoss = ? WHERE TeamID = ?''',(int(i[0][0]) - 1, values[0]))
+        else:
+            winner = values[1]
+            loser = values[0]
+        self.teamCursor.execute('''SELECT NoOfWin FROM Team WHERE TeamID = ?''',(winner,))
+        i = self.teamCursor.fetchall()
+        self.teamCursor.execute('''SELECT NoOfLoss FROM Team WHERE TeamID = ?''',(loser,))
+        j = self.teamCursor.fetchall()
+        self.teamCursor.execute('''UPDATE Team SET NoOfWin = ? WHERE TeamID = ?''',(int(i[0][0]) + 1, winner))
+        self.teamCursor.execute('''UPDATE Team SET NoOfLoss = ? WHERE TeamID = ?''',(int(j[0][0]) + 1, loser))    
+
+        # print(b)
+        # print(b[0][0])
+        # print(type(b[0][0]))
+        # print([values][0][0])
+        # print(type([values][0]))
         # print([values][1])
         # print(type([values][1]))
         self.teamCursor.execute('''UPDATE Team SET NoOfMatches = ? WHERE TeamID = ?''',(int(a[0][0]) + 1, values[0]))
         self.teamCursor.execute('''UPDATE Team SET NoOfMatches = ? WHERE TeamID = ?''',(int(b[0][0]) + 1, values[1]))
+
+        
 
         if values[2] >= 100 and values[2] <= 200:
             self.teamCursor.execute('''SELECT ODI FROM Team WHERE TeamID = ?''',(values[0],))
@@ -188,7 +211,8 @@ class Database:
         try:
         	self.umpireCursor.execute('''INSERT INTO Umpire(u_id,u_name,no_of_matches) VALUES(?,?,?);''', values)
         except:
-        	print("ALREADY A UMPIRE WITH THAT ID")
+        	# print("ALREADY A UMPIRE WITH THAT ID")
+            mb.showerror('Warning', "ALREADY A UMPIRE WITH THAT ID")
         self.umpireCursor.execute('''commit;''')
 
     def insertCoach(self,values):
