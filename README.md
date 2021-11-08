@@ -2,7 +2,7 @@
 DBMS mini project
 
     1. Problem statement
-Cricket score card - A database system to keep track of cricket tournament statistics.
+        Cricket score card - A database system to keep track of cricket tournament statistics.
 
     2. Objectives
     • Maintain record of team score
